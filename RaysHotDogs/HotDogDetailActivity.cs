@@ -37,7 +37,10 @@ namespace RaysHotDogs
             SetContentView(Resource.Layout.HotDogDetailView);
 
             dataService = new HotDogDataService();
-            selectedHotDog = dataService.GetHotDogById(1);
+            // selectedHotDog = dataService.GetHotDogById(1);
+
+            var selectedHotDogId = Intent.Extras.GetInt("selectedHotDogId");
+            selectedHotDog = dataService.GetHotDogById(selectedHotDogId);
 
             FindViews();
             BindData();
@@ -64,26 +67,31 @@ namespace RaysHotDogs
         private void OrderButton_Click(object sender, EventArgs e )
         {
             var amount = Int32.Parse(amountEditText.Text);
-            var dialog = new AlertDialog.Builder(this);
-            dialog.SetTitle("Confirmation");
-            dialog.SetMessage("Your hot dog has been added to your cart!");
-            dialog.Show();
+            //var dialog = new AlertDialog.Builder(this);
+            //dialog.SetTitle("Confirmation");
+            //dialog.SetMessage("Your hot dog has been added to your cart!");
+            //dialog.Show();
+
+            var intent = new Intent();
+            intent.PutExtra("selectedHotDogId", selectedHotDog.HotDogId);
+            intent.PutExtra("amount", amount);
+            SetResult(Result.Ok, intent);
+
+            this.Finish();
         }
 
         private void CancelButton_Click(object sender, EventArgs e )
         {
-            var amount = Int32.Parse(amountEditText.Text);
-            var dialog = new AlertDialog.Builder(this);
-            dialog.SetTitle("Confirmation");
-            dialog.SetMessage("Your hot dog has been added to your cart!");
-            dialog.Show();
+            var intent = new Intent();
+            SetResult(Result.Canceled, intent);
+            this.Finish();
         }
 
         private void FindViews()
         {
             hotDogImageView = FindViewById<ImageView>(Resource.Id.HotDogImageView);
             hotDogNameTextView = FindViewById<TextView>(Resource.Id.hotDogNameTextView);
-            shortDescriptionTextView = FindViewById<TextView>(Resource.Id.hotDogNameTextView);
+            shortDescriptionTextView = FindViewById<TextView>(Resource.Id.shortDescriptionTextView);
             descriptionTextView = FindViewById<TextView>(Resource.Id.descriptionTextView);
             priceTextView = FindViewById<TextView>(Resource.Id.priceTextView);
             amountEditText = FindViewById<EditText>(Resource.Id.amountEditText);
